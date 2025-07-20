@@ -1,103 +1,225 @@
-import Image from "next/image";
+"use client"
+
+import SchemaField from "@/components/common/SchemaField";
+import { useCallback, useEffect, useState } from "react";
+import { Key, Plus, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SchemaProps, SchemaType } from "@/types";
+
+
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [schema, setSchema] = useState<SchemaProps[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  function convertSchemaToObject(schema: SchemaProps[]): Record<string, any> {
+    const result: Record<string, any> = {};
+
+    for (const field of schema) {
+      const type = field.fieldType.trim().toLowerCase();
+
+      if (type === "nested") {
+        // console.log("Parsing nested field:", field.fieldName);
+        result[field.fieldName] = convertSchemaToObject(field.children);
+      } else {
+        result[field.fieldName] = type;
+      }
+    }
+
+    return result;
+  }
+
+
+
+  const addChildren = (path: number[]) => {
+    setSchema((prev) => {
+      const child: SchemaProps = {
+        fieldName: "",
+        fieldType: "",
+        children: [],
+      };
+
+      const newSchema = structuredClone(prev);
+
+      if (path.length === 0) {
+        console.log("path was found emptied so pushing at root")
+        newSchema.push(child);
+        return newSchema;
+      }
+
+      let currentLevel = newSchema;
+      for (let i = 0; i < path.length; i++) {
+        const index = path[i];
+        if (i === path.length - 1) {
+          currentLevel[index].children.push(child);
+        } else {
+          currentLevel = currentLevel[index].children;
+        }
+      }
+
+      return newSchema;
+    });
+  };
+
+  const updateFieldName = useCallback(
+    (path: number[], newValue: string) => {
+      setSchema((prev) => {
+        const newSchema = structuredClone(prev);
+        let currentLevel: any = newSchema;
+
+        for (let i = 0; i < path.length; i++) {
+          const index = path[i];
+          if (i === path.length - 1) {
+            currentLevel[index].fieldName = newValue;
+          } else {
+            currentLevel = currentLevel[index].children;
+          }
+        }
+        return newSchema;
+      })
+    }, []
+  )
+
+
+  const updateFieldType = useCallback(
+    (path: number[], newType: string) => {
+      setSchema((prev) => {
+        const newSchema = structuredClone(prev);
+        let currentLevel = newSchema;
+
+        for (let i = 0; i < path.length; i++) {
+          const index = path[i];
+
+          if (i === path.length - 1) {
+            const field = currentLevel[index];
+
+            const isCurrentlyNested = field.fieldType === "nested";
+            const isBecomingNested = newType === "nested";
+
+            // Toggle OFF behavior for nested (clear both type and children)
+            if (isCurrentlyNested && isBecomingNested) {
+              field.fieldType = "";
+              field.children = [];
+              return newSchema;
+            }
+
+            // Transition from nested to non-nested
+            if (isCurrentlyNested && !isBecomingNested) {
+              field.fieldType = newType;
+              field.children = []; // wipe children
+              return newSchema;
+            }
+
+            // Transition from non-nested to nested
+            if (!isCurrentlyNested && isBecomingNested) {
+              field.fieldType = "nested";
+              field.children = [
+                {
+                  fieldName: "",
+                  fieldType: "",
+                  children: []
+                }
+              ];
+              return newSchema;
+            }
+
+            // Toggle off for same non-nested type
+            if (!isBecomingNested && field.fieldType === newType) {
+              field.fieldType = "";
+              return newSchema;
+            }
+
+            // Change between primitive types
+            if (!isBecomingNested && field.fieldType !== newType) {
+              field.fieldType = newType;
+              return newSchema;
+            }
+
+            return newSchema; // fallback
+          } else {
+            currentLevel = currentLevel[index].children;
+          }
+        }
+
+        return newSchema;
+      });
+    },
+    []
+  );
+
+
+  const deleteField = useCallback((path: number[]) => {
+  setSchema((prev) => {
+    const newSchema = structuredClone(prev);
+
+    // Handle root-level deletion
+    if (path.length === 1) {
+      newSchema.splice(path[0], 1);
+      return newSchema;
+    }
+
+    // Traverse to parent of the node to be deleted
+    let currentLevel = newSchema;
+    for (let i = 0; i < path.length - 2; i++) {
+      currentLevel = currentLevel[path[i]].children;
+    }
+
+    const parentIndex = path[path.length - 2];
+    const targetIndex = path[path.length - 1];
+
+    const parentNode = currentLevel[parentIndex];
+
+    // Delete the target node from the parent's children
+    parentNode.children.splice(targetIndex, 1);
+
+    // Cleanup: if parent has no more children, reset its type
+    if (parentNode.children.length === 0) {
+      parentNode.fieldType = "";
+      parentNode.children = [];
+    }
+
+    return newSchema;
+  });
+}, []);
+
+
+
+  // useEffect(() => {
+  //   console.log("Schema changed", JSON.stringify(schema, null, 2));
+  // }, [schema]);
+
+
+
+  return (
+    <div className="h-screen flex justify-center items-center px-4">
+      <div className="w-6xl max-w-full flex flex-col lg:flex-row gap-2">
+
+        <div className="flex flex-col flex-2 border border-border bg-card rounded-2xl p-4 lg:p-6 gap-6">
+          <span className="text-2xl">Schema Fields</span>
+          {schema.map((field: SchemaProps, i) => (
+            <SchemaField 
+            key={Number("" + i)} 
+            schemaProps={field} path={[i]} 
+            addChildHandler={addChildren} 
+            fieldNameUpdater={updateFieldName} 
+            fieldTypeUpdater={updateFieldType} 
+            fieldDeleter={deleteField}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          ))}
+          <Button onClick={() => addChildren([])}>
+            <Plus />
+            Add Field
+          </Button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="flex-1 border border-border bg-card rounded-2xl p-4">
+          <span className="text-2xl">Schema JSON</span>
+          <pre>
+            <code>{JSON.stringify(convertSchemaToObject(schema), null, 2)}</code>
+          </pre>
+        </div>
+
+      </div>
+
     </div>
   );
 }

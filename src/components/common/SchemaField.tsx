@@ -5,8 +5,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label"
 import { TypeList } from "./TypeList";
-import { useEffect, useRef, useState } from "react";
-import { SchemaProps, SchemaType } from "@/types";
+import { SchemaProps } from "@/types";
 
 type SchemaFieldProps = {
     schemaProps: SchemaProps,
@@ -36,10 +35,10 @@ export default function SchemaField({ schemaProps, addChildHandler, path, fieldN
             <div className="flex gap-4 items-end flex-wrap">
 
                 <div className="grid flex-1 max-w-sm items-center gap-3">
-                    <Label htmlFor="fieldName">Field Name</Label>
+                    <Label htmlFor={"fieldName"+path}>Field Name</Label>
                     <Input
                         type="text"
-                        id="fieldName"
+                        id={"fieldName"+path}
                         placeholder="Field Name"
                         value={schemaProps.fieldName}
                         onChange={fieldNameChangeHandler}
@@ -51,50 +50,13 @@ export default function SchemaField({ schemaProps, addChildHandler, path, fieldN
                     <TypeList path={path} fieldTypeChangeHandler={fieldTypeUpdater} fieldTypeVal={schemaProps.fieldType} />
                 </div>
 
-                <Button variant={"destructive"} onClick={()=> fieldDeleter(path)}>
+                <Button className="cursor-pointer" variant={"destructive"} onClick={()=> fieldDeleter(path)}>
                     <Trash2 />
                 </Button>
 
             </div>
 
 
-
-
-
-            {/* {Object.entries(schemaProps).map(([key, value], i) => {
-                if (typeof value === "object" && value !== null) {
-                    // value is a nested SchemaType — render recursively
-                    return (
-                        <div key={i} className="flex w-full">
-                            <div className="border-s-2 border-b-2 rounded-bl-sm w-[40px] h-[44px]"></div>
-                            <SchemaField
-                                key={path.join("-") + "-" + i}
-                                schemaProps={{ [key]: value }}
-                                path={[...path, key]}
-                                addChildHandler={addChildHandler}
-                                fieldNameUpdater={fieldNameUpdater}
-                            />
-                        </div>
-                    );
-                }
-                return null;
-            })} */}
-
-
-
-            {/* Working one  */}
-            {/* {hasNestedChildren && Object.entries(fieldValue).map(([key, value], i) => (
-                <div key={i} className="flex w-full">
-                    <div className="border-s-2 border-b-2 rounded-bl-sm w-[40px] h-[44px]"></div>
-                    <SchemaField
-                        key={path.join("-") + "-" + i}
-                        schemaProps={{ [key]: value }}
-                        path={[...path, key]}
-                        addChildHandler={addChildHandler}
-                        fieldNameUpdater={fieldNameUpdater}
-                    />
-                </div>
-            ))} */}
 
 
             {schemaProps.children.length > 0 && schemaProps.children.map((field: SchemaProps, i) => (
@@ -114,31 +76,11 @@ export default function SchemaField({ schemaProps, addChildHandler, path, fieldN
 
 
 
-            {/* {Object.entries(schemaProps).map(([key, value], i) => {
-                if (
-                    typeof value === "object" &&
-                    value !== null // optional: if array handling is different
-                ) {
-                    return (
-                        <div key={path.join("-") + "-" + i} className="flex w-full">
-                            <div className="border-s-2 border-b-2 rounded-bl-sm w-[40px] h-[44px]"></div>
-                            <SchemaField
-                                schemaProps={{ [key]: value }}
-                                path={[...path, key]}
-                                addChildHandler={addChildHandler}
-                                fieldNameUpdater={fieldNameUpdater}
-                            />
-                        </div>
-                    );
-                }
-
-                return null; // explicitly return null for non-object values
-            })} */}
 
             {schemaProps.children.length > 0 && (
                 <div className="ms-[40px]">
                     {/* <Button onClick={()=>addChildHandler(path, "New Field", "string")}> */}
-                    <Button onClick={()=>addChildHandler(path)}>
+                    <Button className="cursor-pointer" onClick={()=>addChildHandler(path)}>
                         <Plus />
                         Add Field
                     </Button>

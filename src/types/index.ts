@@ -4,41 +4,10 @@ export type SchemaProps = {
     children: SchemaProps[],
 };
 
-export type SchemaType = {
-    [key: string] : string | SchemaType
-}
+export type JsonSchemaObject = {
+  [key: string]: string | JsonSchemaObject;
+};
 
-// [
-//       {
-//         fieldName: "name 1",
-//         fieldType: "string",
-//         children: []
-//       },
-//       {
-//         fieldName: "name 2",
-//         fieldType: "string",
-//         children: []
-//       },
-//       {
-//         fieldName: "name 3",
-//         fieldType: "nested",
-//         children: [
-//           {
-//             fieldName: "name 31",
-//             fieldType: "string",
-//             children: []
-//           },
-//           {
-//             fieldName: "name 32",
-//             fieldType: "string",
-//             children: []
-//           },
-//         ]
-//       },
-//       {
-//         fieldName: "name 2",
-//         fieldType: "string",
-//         children: []
-//       },
-//     ]
-
+// export type SchemaType = {
+//     [key: string] : string | SchemaType
+// }

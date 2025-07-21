@@ -21,8 +21,8 @@ import {
 
 const frameworks = [
   {
-    value: "String",
-    label: "String",
+    value: "string",
+    label: "string",
   },
   {
     value: "number",
@@ -54,7 +54,7 @@ type typeListProps = {
 
 export function TypeList({path, fieldTypeChangeHandler, fieldTypeVal}: typeListProps) {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState("")
+  // const [value, setValue] = useState("")
 
 
   return (
@@ -66,7 +66,7 @@ export function TypeList({path, fieldTypeChangeHandler, fieldTypeVal}: typeListP
           aria-expanded={open}
           className="w-full justify-between "
         >
-          <span className={`${value? "text-foreground": "text-muted-foreground"} font-normal`}>
+          <span className={`${fieldTypeVal? "text-foreground": "text-muted-foreground"} font-normal`}>
             {/* {value
             ? frameworks.find((framework) => framework.value === value)?.label
             : "Select type..."} */}
@@ -96,7 +96,7 @@ export function TypeList({path, fieldTypeChangeHandler, fieldTypeVal}: typeListP
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      fieldTypeVal === framework.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>

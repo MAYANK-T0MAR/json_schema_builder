@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JSON Schema Builder
+![Next.js](https://img.shields.io/badge/Next.js-000?style=for-the-badge&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Fun Project](https://img.shields.io/badge/Built%20For-Fun-FF69B4?style=for-the-badge)
 
-## Getting Started
+A minimal JSON schema builder built with **Next.js**, **TypeScript**, and **Tailwind CSS**, designed for real-time schema editing with full nesting support.
 
-First, run the development server:
+## Live Demo
+[Click Here](https://json-schema-builder-gules.vercel.app/) to see the live demo.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Problem Statement
+
+The goal was to create a dynamic and interactive JSON schema editor that allows users to:
+
+- Realtime edit schema structure.
+- Support nested fields (deep nesting allowed).
+- Maintain schema as a **valid JSON object**, not an array of field definitions.
+- Allow **custom key names** for all key fields.
+- Enable **editing and deletion** at any nesting level.
+
+### 🧪 Example Output
+
+```json
+{
+  "Name": {
+    "First Name": "string",
+    "Middle Name": "string",
+    "Last Name": "string"
+  },
+  "Phone": "number",
+  "Address": {
+    "City": "string",
+    "State": "string"
+  }
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⚙️ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Custom Keys**: Define any key name at any level.
+- **Nested Fields**: Add fields inside other fields (recursive nesting).
+- **Real-time Editing**: All changes reflect instantly in the schema view.
+- **Delete Support**: Delete fields from any level of nesting.
+- **Minimal UI**: Clean and intuitive interface using Tailwind CSS.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Preview
+<img width="1918" height="938" alt="image" src="https://github.com/user-attachments/assets/faa81a1e-eb6a-4f12-8f29-131626896046" />
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Built With
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [Next.js](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
 
-## Deploy on Vercel
+## 📦 Getting Started
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/your-username/json-schema-builder.git
+   cd json-schema-builder
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+
+## 🤝 Contributing
+
+Pull requests are welcome. If you have suggestions for improvements or new features, feel free to open an issue or create a PR.
+
+---
+
+> Built for Fun using modern frontend tools.

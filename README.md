@@ -59,7 +59,7 @@ The goal was to create a dynamic and interactive JSON schema editor that allows 
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/your-username/json-schema-builder.git
+   git clone https://github.com/MAYANK-T0MAR/json_schema_builder.git
    cd json-schema-builder
    ```
 

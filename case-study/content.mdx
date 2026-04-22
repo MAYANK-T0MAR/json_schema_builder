@@ -1,6 +1,65 @@
 ---
 liveUrl: "https://json-schema-builder-gules.vercel.app"
 scope: "Fun Project / Frontend"
-tools: "React.js, TypeScript, Tailwind CSS, Shadcn UI"
+tools: "Next.js, TypeScript, Tailwind CSS, Shadcn UI"
 status: "Live Prototype"
 ---
+
+<ContentSection title="What Is This">
+
+# A lightweight JSON schema builder that lets you define, nest, and edit schema fields in real time without any fuss
+
+This is a small side project built with **Next.js**, **TypeScript**, and **Tailwind CSS**. The idea was simple — make a tool that lets you visually construct a JSON schema and see the output update as you go. Nothing fancy, just something practical that scratches a specific itch.
+
+You can check out the [live demo here](https://json-schema-builder-gules.vercel.app/) if you want to poke around before reading further.
+
+</ContentSection>
+
+<ContentSection title="The Problem">
+
+# The goal was to build a schema editor that stays out of your way and keeps the output clean and valid at all times
+
+Most quick schema tools either output arrays of field definitions or don't support deep nesting — which makes them less useful when you're trying to model something even slightly complex. The requirements for this one were pretty straightforward:
+
+- **Real-time editing** — changes reflect in the schema output immediately
+- **Deep nesting support** — fields can contain other fields, recursively
+- **Valid JSON output** — the result is always a proper JSON object, not an array of definitions
+- **Custom key names** — you pick the key at every level
+- **Edit and delete anywhere** — not just at the top level
+
+Here's an example of what the output looks like:
+
+```
+{
+  "Name": {
+    "First Name": "string",
+    "Middle Name": "string",
+    "Last Name": "string"
+  },
+  "Phone": "number",
+  "Address": {
+    "City": "string",
+    "State": "string"
+  }
+}
+```
+
+The output is a plain, nested JSON object — exactly what you'd expect if you wrote it by hand.
+
+</ContentSection>
+
+<ContentSection title="Core Features">
+
+# A small but complete feature set that covers the basics of interactive schema building without overcomplicating things
+
+The feature list is intentionally minimal. It does what it needs to do:
+
+- **Custom Keys** — define any key name at any nesting level
+- **Nested Fields** — add child fields inside any existing field, as deep as you need
+- **Real-time Editing** — the schema view updates instantly as you make changes
+- **Delete Support** — remove fields at any level, not just the root
+- **Minimal UI** — built with Tailwind CSS, clean and easy to navigate
+
+It's not trying to be a full-featured schema design tool — *it's more of a utility for quickly sketching out a structure*. If that's what you need, it works well.
+
+</ContentSection>
